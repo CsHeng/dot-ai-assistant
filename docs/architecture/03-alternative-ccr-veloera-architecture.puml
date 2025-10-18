@@ -1,0 +1,118 @@
+@startuml alternative-ccr-veloera-architecture
+!theme plain
+
+title 备选方案架构：Claude Code + CCR + Mise + Veloera
+
+note right of ClaudeCodeCCR
+  CCR核心价值：
+  1. 智能场景路由
+  2. 模型间自动切换
+  3. API格式转换
+  4. 多配置文件支持
+  5. 编程助手优化
+end note
+
+note right of Mise
+  Mise在CCR方案中的作用：
+  1. 管理多个CCR配置文件
+  2. 项目级CCR配置切换
+  3. 环境变量管理
+  4. 环境配置管理
+end note
+
+note right of User
+  CCR方案优势：
+  1. 更智能的路由策略
+  2. 场景化模型选择
+  3. 多配置文件支持
+  4. 高级格式转换
+
+  CCR方案劣势：
+  1. 增加一层复杂性
+  2. 需要维护多个配置文件
+  3. CCR配置切换需要额外步骤
+end note
+
+actor 用户 as User
+participant "Veloera Gateway" as Veloera
+participant "Mise (环境管理)" as Mise
+participant "Claude Code + CCR" as ClaudeCodeCCR
+database "外部Provider APIs" as ExternalAPIs
+
+== Veloera部署和配置 ==
+User -> Veloera: 部署Standalone Gateway服务
+Veloera -> Veloera: 启动HTTP API服务 (端口3000)
+User -> Veloera: 通过Web界面配置Provider
+Veloera -> ExternalAPIs: 添加BigGLM coding API配置
+Veloera -> ExternalAPIs: 添加BigGLM normal API配置
+Veloera -> ExternalAPIs: 添加DeepSeek API配置
+Veloera -> ExternalAPIs: 添加Kimi API配置
+Veloera -> User: 提供OpenAI兼容HTTP接口
+
+== 多CCR配置文件 ==
+User -> User: 创建多个CCR配置文件
+User -> User: dev-config.json (glm-4.6)
+User -> User: content-config.json (glm-4.5)
+User -> User: data-config.json (glm-4.6)
+
+== Mise项目级配置 ==
+User -> Mise: 进入开发项目目录
+Mise -> Mise: 加载.mise.toml配置
+Mise -> Mise: 设置CCR_CONFIG_FILE环境变量
+Mise -> ClaudeCodeCCR: 启动CCR使用dev-config.json
+ClaudeCodeCCR -> Veloera: 连接到Veloera
+Mise -> User: 显示: "已切换到开发配置"
+
+== Claude Code + CCR智能路由 ==
+User -> ClaudeCodeCCR: claude "写一个React组件"
+ClaudeCodeCCR -> ClaudeCodeCCR: CCR智能路由分析
+ClaudeCodeCCR -> Veloera: 请求glm-4.6模型
+Veloera -> ExternalAPIs: 路由到BigGLM API
+ExternalAPIs -> Veloera: 返回响应
+Veloera -> ClaudeCodeCCR: 返回响应
+ClaudeCodeCCR -> ClaudeCodeCCR: 格式转换和优化
+ClaudeCodeCCR -> User: 展示结果
+
+== 项目间CCR配置切换 ==
+User -> Mise: 切换到内容创作项目目录
+Mise -> Mise: 加载新项目.mise.toml
+Mise -> Mise: 切换CCR_CONFIG_FILE到content-config.json
+Mise -> ClaudeCodeCCR: 重启CCR使用新配置
+ClaudeCodeCCR -> Veloera: 重新连接
+ClaudeCodeCCR -> User: 显示: "已切换到内容创作配置"
+
+User -> ClaudeCodeCCR: claude "写一篇技术博客"
+ClaudeCodeCCR -> ClaudeCodeCCR: CCR智能选择glm-4.5
+ClaudeCodeCCR -> Veloera: 请求glm-4.5模型
+Veloera -> ExternalAPIs: 路由到BigGLM API
+ExternalAPIs -> Veloera: 返回响应
+Veloera -> ClaudeCodeCCR: 返回响应
+ClaudeCodeCCR -> User: 展示结果
+
+== CCR智能场景路由 ==
+User -> ClaudeCodeCCR: claude "分析这个复杂数据集" (长上下文)
+ClaudeCodeCCR -> ClaudeCodeCCR: 检测到长上下文需求
+ClaudeCodeCCR -> Veloera: 选择glm-4-long模型
+Veloera -> ExternalAPIs: 路由到BigGLM Long Context
+ExternalAPIs -> ClaudeCodeCCR: 返回长文本响应
+ClaudeCodeCCR -> User: 展示分析结果
+
+User -> ClaudeCodeCCR: claude "生成这张图片的描述" (多模态)
+ClaudeCodeCCR -> ClaudeCodeCCR: 检测到图像处理需求
+ClaudeCodeCCR -> Veloera: 选择glm-4.5v模型
+Veloera -> ExternalAPIs: 路由到BigGLM Vision
+ExternalAPIs -> ClaudeCodeCCR: 返回图像分析
+ClaudeCodeCCR -> User: 展示图像描述
+
+== Mise环境管理CCR ==
+User -> Mise: switch to development config
+Mise -> ClaudeCodeCCR: 停止当前CCR
+Mise -> ClaudeCodeCCR: 启动CCR使用dev-config.json
+Mise -> User: ✅ 已切换到开发配置
+
+User -> Mise: check AI status
+Mise -> Mise: 获取当前项目配置
+Mise -> ClaudeCodeCCR: 获取CCR状态
+Mise -> User: 显示完整状态报告
+
+@enduml

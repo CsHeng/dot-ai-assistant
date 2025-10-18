@@ -1,0 +1,125 @@
+@startuml dual-track-architecture
+!theme plain
+
+title 双轨制AI工具架构：通用多工具 + Claude Code专用
+
+note right of Veloera
+  Veloera核心价值：
+  - 汇集多个Provider API
+  - 支持各种原生协议格式
+  - API Key集中管理
+  - 自动故障转移
+  - 使用情况透明化
+end note
+
+note right of User
+  用户收益：
+  1. 双轨制架构灵活性
+  2. 项目级自动工具选择
+  3. 统一的Provider管理
+  4. 减少配置维护复杂度
+end note
+
+note right of Mise
+  Mise核心功能：
+  - 项目级环境管理
+  - 工具自动选择
+  - 配置隔离和切换
+  - 环境配置工具
+end note
+
+note right of GeneralCLI
+  通用CLI工具：
+  - 使用原生协议
+  - 直接连接Veloera
+  - 项目级配置管理
+  - 无需特殊转换层
+end note
+
+note right of ClaudeCode
+  Claude Code专用：
+  - 通过CCR特殊处理
+  - 智能路由和格式转换
+  - 单实例配置
+  - 独立于通用架构
+end note
+
+actor 用户 as User
+participant "Veloera Gateway\n(Provider汇集层)" as Veloera
+participant "Mise\n(环境管理层)" as Mise
+participant "通用CLI工具\n(claude/codex/qwen)" as GeneralCLI
+participant "Claude Code CLI\n(Claude Code专用)" as ClaudeCode
+participant "CCR\n(Claude Code专用路由)" as CCR
+database "外部Provider APIs" as ExternalAPIs
+
+== 通用多工具架构（主要模式） ==
+
+group 通用多工具架构
+  User -> Mise: 进入开发项目目录
+  Mise -> Mise: 自动加载.mise.toml配置
+  Mise -> Mise: 选择codex工具 + glm-4.6模型
+
+  User -> GeneralCLI: codex "写一个React组件"
+  GeneralCLI -> Mise: 获取环境变量配置
+  Mise -> GeneralCLI: 返回Veloera API配置
+  GeneralCLI -> Veloera: 请求glm-4.6模型 (OpenAI格式)
+  Veloera -> ExternalAPIs: 路由到BigGLM API
+  ExternalAPIs -> Veloera: 返回响应
+  Veloera -> GeneralCLI: 转换为OpenAI格式
+  GeneralCLI -> User: 展示结果
+
+  == 项目间自动切换 ==
+  User -> Mise: 切换到内容创作项目
+  Mise -> Mise: 自动加载新项目配置
+  Mise -> Mise: 选择claude工具 + glm-4.5模型
+
+  User -> GeneralCLI: claude "写一篇技术文档"
+  GeneralCLI -> Veloera: 请求glm-4.5模型 (原生协议)
+  Veloera -> ExternalAPIs: 路由到BigGLM API
+  Veloera -> GeneralCLI: 返回响应
+  GeneralCLI -> User: 展示结果
+end
+
+== Claude Code专用架构（特殊模式） ==
+
+group Claude Code专用架构
+  User -> ClaudeCode: 进入Claude Code项目
+  User -> CCR: 启动CCR服务 (ccr start)
+  CCR -> CCR: 加载~/.claude-code-router/config.json
+
+  User -> ClaudeCode: claude "分析这个数据集"
+  ClaudeCode -> CCR: 请求智能路由 (Anthropic格式)
+  CCR -> CCR: 选择glm-4.6模型 + 特殊协议处理
+  CCR -> Veloera: 转换请求格式
+  Veloera -> ExternalAPIs: 路由到BigGLM API
+  ExternalAPIs -> Veloera: 返回响应
+  Veloera -> CCR: 返回标准格式
+  CCR -> ClaudeCode: 特殊协议转换
+  ClaudeCode -> User: 展示结果
+end
+
+== Mise统一管理 ==
+
+group Mise环境管理
+  User -> Mise: check AI configuration status
+  Mise -> Mise: 检测项目类型和工具配置
+  Mise -> User: 显示当前配置状态
+
+  User -> Mise: test AI connection
+  Mise -> GeneralCLI: 测试通用CLI工具连接
+  GeneralCLI -> Veloera: 发送测试请求
+  Mise -> User: 显示测试结果
+end
+
+== Veloera统一Provider管理 ==
+
+group Provider集中管理
+  User -> Veloera: 访问Web管理界面
+  Veloera -> User: 显示所有Provider状态
+  Veloera -> User: 显示使用统计和成本
+
+  User -> Veloera: 更新API Key
+  Veloera -> Veloera: 更新Provider配置
+  Veloera -> User: ✅ 所有工具自动使用新配置
+
+@enduml

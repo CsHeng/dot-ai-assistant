@@ -1,0 +1,162 @@
+@startuml veloera-solution-architecture
+!theme plain
+
+title 方案架构：基于Veloera的统一AI工具管理系统
+
+note right of Veloera
+  Veloera核心价值：
+  1. 汇集多个Provider API
+  2. HTTP API转发/改写
+  3. 统一OpenAI兼容接口
+  4. 特殊endpoint支持 (BigGLM coding)
+  5. API Key集中管理
+  6. 使用情况透明化
+  7. 自动故障转移
+  8. 负载均衡
+end note
+
+note right of Mise
+  Mise项目层功能：
+  1. 项目级环境隔离
+  2. 自动检测项目类型
+  3. 一键切换模型配置
+  4. 配置文件版本管理
+  5. 与Veloera完美集成
+end note
+
+note right of User
+  用户收益：
+  1. 一处配置，处处使用
+  2. 项目间自动切换
+  3. 使用情况透明化
+  4. 大幅减少配置维护
+  5. 统一HTTP API接口
+end note
+
+actor 用户 as User
+participant "Veloera Gateway" as Veloera
+participant "Mise (环境管理)" as Mise
+participant "Claude CLI" as ClaudeCLI
+participant "Claude Code + CCR" as ClaudeCode
+participant "Qwen CLI" as QwenCLI
+participant "Gemini CLI" as GeminiCLI
+participant "Cursor IDE" as Cursor
+participant "VS Code + Copilot" as VSCode
+participant "规则同步系统" as RuleSync
+database "外部Provider APIs" as ExternalAPIs
+
+== Veloera部署和配置 ==
+User -> Veloera: 部署Standalone Gateway服务
+Veloera -> Veloera: 启动HTTP API服务 (端口3000)
+User -> Veloera: 配置Provider (config.json)
+Veloera -> ExternalAPIs: 添加BigGLM coding API配置
+Veloera -> ExternalAPIs: 添加BigGLM normal API配置
+Veloera -> ExternalAPIs: 添加DeepSeek API配置
+Veloera -> ExternalAPIs: 添加Kimi API配置
+Veloera -> User: 提供OpenAI兼容HTTP接口
+
+== Mise全局配置 ==
+User -> Mise: 配置全局环境变量
+Mise -> Mise: 设置VELOERA_URL
+Mise -> Mise: 设置VELOERA_TOKEN
+Mise -> Mise: 设置默认Provider配置
+Mise -> User: 全局配置完成
+
+== 项目级自动切换 ==
+User -> Mise: 进入项目A目录
+Mise -> Mise: 自动检测项目类型
+Mise -> Mise: 加载项目A配置
+Mise -> Mise: 设置项目特定模型
+Mise -> User: 显示: "已切换到项目A配置"
+
+User -> ClaudeCLI: claude "写代码"
+ClaudeCLI -> Mise: 获取当前环境变量
+Mise -> ClaudeCLI: 返回Veloera配置
+ClaudeCLI -> Veloera: HTTP请求到统一接口
+Veloera -> Veloera: 根据模型选择Provider
+Veloera -> ExternalAPIs: 转发到BigGLM API
+ExternalAPIs -> Veloera: 返回响应
+Veloera -> ClaudeCLI: 转换为统一格式
+ClaudeCLI -> User: 展示结果
+
+== Claude Code + CCR专用路由 ==
+User -> ClaudeCode: 启动Claude Code
+ClaudeCode -> Mise: 获取Veloera配置
+ClaudeCode -> Veloera: 配置CCR使用Veloera
+ClaudeCode -> Veloera: 获取可用模型列表
+
+User -> ClaudeCode: /model bigglm-GLM-4.6
+ClaudeCode -> Veloera: 请求BigGLM模型
+Veloera -> ExternalAPIs: 路由到BigGLM API
+ExternalAPIs -> Veloera: 返回响应
+Veloera -> ClaudeCode: 返回响应
+ClaudeCode -> User: 展示结果
+
+== 其他CLI工具统一接入 ==
+User -> QwenCLI: qwen "分析文本"
+QwenCLI -> Mise: 获取Veloera配置
+Mise -> QwenCLI: 返回统一HTTP API配置
+QwenCLI -> Veloera: HTTP请求到统一接口
+Veloera -> ExternalAPIs: 使用当前项目配置的Provider
+Veloera -> QwenCLI: 返回统一格式响应
+QwenCLI -> User: 展示结果
+
+User -> GeminiCLI: gemini "翻译内容"
+GeminiCLI -> Mise: 获取Veloera配置
+Mise -> GeminiCLI: 返回统一HTTP API配置
+GeminiCLI -> Veloera: HTTP请求到统一接口
+Veloera -> ExternalAPIs: 路由到Kimi (经济模式)
+Veloera -> GeminiCLI: 返回响应
+GeminiCLI -> User: 展示结果
+
+== IDE工具统一配置 ==
+RuleSync -> Mise: 获取项目配置
+RuleSync -> Cursor: 同步Veloera配置
+Cursor -> Mise: 获取Veloera配置
+Cursor -> Veloera: 使用统一HTTP接口
+Cursor -> User: IDE智能助手响应
+
+RuleSync -> VSCode: 同步Veloera配置
+VSCode -> Mise: 获取Veloera配置
+VSCode -> Veloera: 使用统一HTTP接口
+VSCode -> User: Copilot响应
+
+== 项目间无缝切换 ==
+User -> Mise: 切换到项目B目录
+Mise -> Mise: 自动检测项目B类型
+Mise -> Mise: 切换到B项目配置
+Mise -> User: 显示: "已切换到项目B: DeepSeek"
+
+User -> ClaudeCLI: claude "继续工作"
+ClaudeCLI -> Veloera: 使用B项目配置
+Veloera -> ExternalAPIs: 自动路由到DeepSeek
+ExternalAPIs -> ClaudeCLI: 返回响应
+ClaudeCLI -> User: 展示结果
+
+== Mise一键管理命令 ==
+User -> Mise: switch AI provider to deepseek-chat
+Mise -> Mise: 更新项目模型配置
+Mise -> User: ✅ 已切换到DeepSeek
+
+User -> Mise: enable economy mode
+Mise -> Mise: 启用经济模式
+Mise -> Veloera: 选择经济Provider
+Mise -> User: ✅ 已切换到经济模式
+
+User -> Mise: check AI status
+Mise -> Mise: 获取当前配置
+Mise -> Veloera: 获取使用统计
+Mise -> User: 显示完整状态报告
+
+== Provider集中管理优势 ==
+User -> Veloera: 查看Web管理界面
+Veloera -> User: 显示所有Provider状态
+Veloera -> User: 显示使用统计
+Veloera -> User: 显示成本分析
+Veloera -> User: 显示API Key管理
+
+User -> Veloera: 更换BigGLM API Key
+Veloera -> Veloera: 更新Provider配置
+Veloera -> User: ✅ 所有工具自动使用新Key
+
+@enduml

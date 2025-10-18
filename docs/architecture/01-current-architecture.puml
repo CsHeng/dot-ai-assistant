@@ -1,0 +1,136 @@
+@startuml current-architecture
+!theme plain
+
+title 当前架构：CLI工具 + Mise环境管理 + Veloera网关
+
+note right of User
+  现状痛点：
+  1. 配置分散维护
+  2. Provider分散管理
+  3. 项目间配置切换复杂
+  4. 工具配置不同步
+
+  当前解决方案：
+  - Veloera: Provider汇集网关，统一API管理
+  - Mise: 项目级环境管理，自动切换配置
+  - Claude Code CLI: 通过环境变量自动使用项目配置
+end note
+
+note right of Veloera
+  Veloera核心价值：
+  1. 汇集多个Provider API
+  2. HTTP API统一接口
+  3. BigGLM coding计费计划支持
+  4. API Key集中管理
+  5. 使用情况透明化
+end note
+
+note right of Mise
+  Mise项目层功能：
+  1. 项目级环境隔离
+  2. 自动配置切换
+  3. 模型偏好管理
+  4. 环境管理工具
+  5. 与Veloera完美集成
+end note
+
+note right of ClaudeCode
+  Claude Code CLI优势：
+  1. 官方工具，稳定可靠
+  2. 通过环境变量配置
+  3. 自动使用项目配置
+  4. 无需额外工具层
+  5. 简单直接的工作流
+end note
+
+== 现状痛点分析 ==
+
+group 现状问题
+  User -> User: 配置分散维护
+  User -> User: 项目切换复杂
+  User -> User: API Key管理困难
+  User -> User: 使用情况不透明
+end
+
+== 当前解决方案架构 ==
+
+actor 用户 as User
+participant "Veloera Gateway" as Veloera
+participant "Mise (环境管理)" as Mise
+participant "Claude Code CLI" as ClaudeCode
+database "外部Provider APIs" as ExternalAPIs
+
+== Veloera部署和配置 ==
+User -> Veloera: 部署Docker服务 (docker-compose up -d)
+Veloera -> Veloera: 启动HTTP API服务 (端口3000)
+User -> Veloera: 通过Web界面配置Provider
+Veloera -> ExternalAPIs: 添加BigGLM API (glm-4.6, glm-4.5)
+Veloera -> ExternalAPIs: 添加BigGLM coding计费计划
+Veloera -> ExternalAPIs: 添加DeepSeek API
+Veloera -> ExternalAPIs: 添加Kimi API
+Veloera -> User: 提供统一OpenAI兼容HTTP接口
+
+== Mise全局配置 ==
+User -> Mise: 安装配置mise (curl https://mise.run | sh)
+User -> Mise: 配置全局环境变量
+Mise -> Mise: 设置VELOERA_URL
+Mise -> Mise: 设置VELOERA_TOKEN
+Mise -> Mise: 设置默认模型配置
+Mise -> User: 全局配置完成
+
+== 项目级自动切换 ==
+User -> Mise: 进入开发项目目录
+Mise -> Mise: 自动加载.mise.toml配置
+Mise -> Mise: 设置glm-4.6模型
+Mise -> User: 显示: "开发项目 (glm-4.6)"
+
+User -> ClaudeCode: claude "写一个React组件"
+ClaudeCode -> Mise: 获取环境变量 ANTHROPIC_AUTH_TOKEN
+Mise -> ClaudeCode: 返回Veloera配置
+ClaudeCode -> Veloera: HTTP请求到统一接口
+Veloera -> Veloera: 选择glm-4.6模型
+Veloera -> ExternalAPIs: 转发到BigGLM API
+ExternalAPIs -> Veloera: 返回响应
+Veloera -> ClaudeCode: 转换为统一格式
+ClaudeCode -> User: 展示结果
+
+== 项目间无缝切换 ==
+User -> Mise: 切换到内容创作项目目录
+Mise -> Mise: 自动加载新项目.mise.toml
+Mise -> Mise: 切换到glm-4.5模型
+Mise -> User: 显示: "内容创作项目 (glm-4.5)"
+
+User -> ClaudeCode: claude "写一篇技术博客"
+ClaudeCode -> Mise: 获取新环境变量
+Mise -> ClaudeCode: 返回glm-4.5配置
+ClaudeCode -> Veloera: 请求glm-4.5模型
+Veloera -> ExternalAPIs: 路由到BigGLM API
+ExternalAPIs -> Veloera: 返回响应
+Veloera -> ClaudeCode: 返回响应
+ClaudeCode -> User: 展示结果
+
+== 经济模式项目 ==
+User -> Mise: 切换到个人项目目录
+Mise -> Mise: 自动加载项目.mise.toml
+Mise -> Mise: 切换到kimi模型
+Mise -> User: 显示: "经济模式项目 (moonshot-v1-8k)"
+
+User -> ClaudeCode: claude "帮我分析这段代码"
+ClaudeCode -> Veloera: 请求moonshot-v1-8k模型
+Veloera -> ExternalAPIs: 路由到Kimi API
+ExternalAPIs -> Veloera: 返回响应
+Veloera -> ClaudeCode: 返回响应
+ClaudeCode -> User: 展示结果
+
+== Provider集中管理优势 ==
+User -> Veloera: 访问Web管理界面
+Veloera -> User: 显示所有Provider状态
+Veloera -> User: 显示使用统计
+Veloera -> User: 显示成本分析
+Veloera -> User: 显示API Key管理
+
+User -> Veloera: 更换BigGLM API Key
+Veloera -> Veloera: 更新Provider配置
+Veloera -> User: ✅ 所有项目自动使用新Key
+
+@enduml
