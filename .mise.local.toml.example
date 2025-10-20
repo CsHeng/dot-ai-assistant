@@ -1,9 +1,0 @@
-
-[env]
-# Claude Code personal
-#ANTHROPIC_BASE_URL = "https://open.bigmodel.cn/api/anthropic"
-#ANTHROPIC_AUTH_TOKEN = "your-bigmodel-api-key"
-
-# Veloera API
-ANTHROPIC_BASE_URL = "http://10.1.1.11:3000/"
-ANTHROPIC_AUTH_TOKEN = "sk-your-veloera-api-key"
