@@ -6,10 +6,10 @@ API_TIMEOUT_MS = "3000000"
 CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1"
 
 # Claude Code Model settings
-#ANTHROPIC_DEFAULT_HAIKU_MODEL = "glm-4.5-air"
-#ANTHROPIC_DEFAULT_OPUS_MODEL = "glm-4.6"
-#ANTHROPIC_DEFAULT_SONNET_MODEL = "glm-4.6"
-#ANTHROPIC_MODEL = "glm-4.6"
+ANTHROPIC_DEFAULT_HAIKU_MODEL = "glm-4.5-air"
+ANTHROPIC_DEFAULT_OPUS_MODEL = "glm-4.6"
+ANTHROPIC_DEFAULT_SONNET_MODEL = "glm-4.6"
+ANTHROPIC_MODEL = "glm-4.6"
 
 # Claude Code API Configuration
 # Option 1: Direct BigGLM API
@@ -20,11 +20,7 @@ CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1"
 ANTHROPIC_BASE_URL = "http://10.1.1.11:3000/"
 ANTHROPIC_AUTH_TOKEN = "sk-your-veloera-api-key"
 
-# Qwen CLI Configuration (OpenAI-compatible)
-#OPENAI_BASE_URL = "http://10.1.1.11:3000/v1"
-#OPENAI_API_KEY = "sk-your-veloera-api-key"
-
-# Codex CLI Configuration (OpenAI-compatible)
-# Note: Uses same OPENAI_* variables as Qwen since both are OpenAI-compatible
-#OPENAI_BASE_URL = "http://10.1.1.11:3000/v1"
-#OPENAI_API_KEY = "sk-your-veloera-api-key"
+# OpenAI-compatible CLI Configuration(e.g., Qwen CLI)
+OPENAI_BASE_URL = "http://10.1.1.11:3000/v1"
+OPENAI_API_KEY = "sk-your-veloera-api-key"
+OPENAI_MODEL = "glm-4.6"
