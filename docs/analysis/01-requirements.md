@@ -5,12 +5,12 @@
 ### 1.1 已安装的AI工具
 
 **Agent CLI (TUI - Terminal UI)**:
-- Claude Code CLI (`@anthropic-ai/claude-code`) - 主要开发工具
+- Claude Code CLI (`@anthropic-ai/claude-code`) - 主要开发工具，支持第三方API配置 (ANTHROPIC_AUTH_TOKEN + ANTHROPIC_BASE_URL)
 - OpenCode - 开源编程Agent，终端直接执行
-- Qwen CLI (通过brew安装) - 备用工具
-- Gemini CLI (通过brew安装) - 测试工具
+- Qwen CLI (通过brew安装) - 备用工具，支持第三方API配置 (OPENAI_API_KEY + OPENAI_BASE_URL)
+- Gemini CLI (通过brew安装) - 测试工具，仅支持官方API (GOOGLE_AI_API_KEY)
 - Factory AI CLI (`droid`) - 端到端开发代理，直接在终端中操作
-- OpenAI Codex CLI - OpenAI官方编程Agent
+- OpenAI Codex CLI - OpenAI官方编程Agent，仅支持官方登录认证
 
 **Agent IDE (GUI - Graphical UI)**:
 - Cursor - AI编程IDE

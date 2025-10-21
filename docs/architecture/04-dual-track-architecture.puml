@@ -29,11 +29,15 @@ note right of Mise
 end note
 
 note right of GeneralCLI
-  通用CLI工具：
-  - 使用原生协议
-  - 直接连接Veloera
+  通用CLI工具（支持第三方API）：
+  - Claude Code CLI (Anthropic协议)
+  - Qwen CLI (OpenAI协议)
+  - 使用原生协议直接连接Veloera
   - 项目级配置管理
   - 无需特殊转换层
+
+  注意：不包括仅支持官方API的工具
+  （如Gemini CLI、OpenAI Codex CLI）
 end note
 
 note right of ClaudeCode
@@ -47,7 +51,7 @@ end note
 actor 用户 as User
 participant "Veloera Gateway\n(Provider汇集层)" as Veloera
 participant "Mise\n(环境管理层)" as Mise
-participant "通用CLI工具\n(claude/codex/qwen)" as GeneralCLI
+participant "通用CLI工具\n(claude/qwen)" as GeneralCLI
 participant "Claude Code CLI\n(Claude Code专用)" as ClaudeCode
 participant "CCR\n(Claude Code专用路由)" as CCR
 database "外部Provider APIs" as ExternalAPIs
@@ -57,9 +61,9 @@ database "外部Provider APIs" as ExternalAPIs
 group 通用多工具架构
   User -> Mise: 进入开发项目目录
   Mise -> Mise: 自动加载.mise.toml配置
-  Mise -> Mise: 选择codex工具 + glm-4.6模型
+  Mise -> Mise: 选择qwen工具 + glm-4.6模型
 
-  User -> GeneralCLI: codex "写一个React组件"
+  User -> GeneralCLI: qwen "写一个React组件"
   GeneralCLI -> Mise: 获取环境变量配置
   Mise -> GeneralCLI: 返回Veloera API配置
   GeneralCLI -> Veloera: 请求glm-4.6模型 (OpenAI格式)

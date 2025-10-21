@@ -48,12 +48,12 @@
 - Provider统一汇集: 通过Veloera统一管理BigGLM、DeepSeek、Kimi等
 - API Key集中管理: 一处配置，多处使用，更换key只需要改一个地方
 - 项目隔离: 不同项目使用不同的AI配置
-- 工具统一: 所有AI工具使用统一的配置源和API接口
+- 工具统一: 支持第三方API的AI工具使用统一的配置源和API接口
 - 规则同步: 统一管理各工具的rules配置
 - IDE集成: Cursor、VS Code Copilot、Kiro等IDE的AI配置
 
 ### 3.2 技术优势
-- 统一HTTP接口: 所有工具都通过统一的OpenAI兼容HTTP API访问
+- 统一HTTP接口: 支持第三方API的工具通过统一的OpenAI兼容HTTP API访问
 - API转发/改写: 自动转换不同Provider的API格式为统一格式
 - 统一endpoint支持: 通过统一的API接口访问所有Provider
 - 项目级自动切换: 进入不同项目目录自动切换合适的model/provider

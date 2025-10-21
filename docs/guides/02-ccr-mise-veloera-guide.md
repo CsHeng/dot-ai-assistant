@@ -10,7 +10,7 @@
 
 ### 通用多工具架构（主要模式）
 ```
-Project A (codex)    Project B (claude)    Project C (qwen)
+Project A (qwen)     Project B (claude)    Project C (qwen)
        ↓                   ↓                   ↓
     Mise Env           Mise Env           Mise Env
        ↓                   ↓                   ↓
@@ -20,6 +20,8 @@ Project A (codex)    Project B (claude)    Project C (qwen)
                        ↓
                 Multiple AI Providers
 ```
+
+**注意**: 此架构仅包含支持第三方API配置的CLI工具（Claude Code CLI、Qwen CLI），不包括仅支持官方API的工具（如OpenAI Codex CLI）。
 
 ### Claude Code专用架构（特殊模式）
 ```

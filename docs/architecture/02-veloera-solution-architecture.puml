@@ -92,7 +92,7 @@ ExternalAPIs -> Veloera: 返回响应
 Veloera -> ClaudeCode: 返回响应
 ClaudeCode -> User: 展示结果
 
-== 其他CLI工具统一接入 ==
+== 支持Veloera的CLI工具统一接入 ==
 User -> QwenCLI: qwen "分析文本"
 QwenCLI -> Mise: 获取Veloera配置
 Mise -> QwenCLI: 返回统一HTTP API配置
@@ -101,12 +101,16 @@ Veloera -> ExternalAPIs: 使用当前项目配置的Provider
 Veloera -> QwenCLI: 返回统一格式响应
 QwenCLI -> User: 展示结果
 
+== 仅支持官方API的工具 (独立使用) ==
+note right of GeminiCLI
+  Gemini CLI 仅支持官方API
+  无法连接Veloera网关
+  需要独立配置和使用
+end note
+
 User -> GeminiCLI: gemini "翻译内容"
-GeminiCLI -> Mise: 获取Veloera配置
-Mise -> GeminiCLI: 返回统一HTTP API配置
-GeminiCLI -> Veloera: HTTP请求到统一接口
-Veloera -> ExternalAPIs: 路由到Kimi (经济模式)
-Veloera -> GeminiCLI: 返回响应
+GeminiCLI -> ExternalAPIs: 直接连接Google官方API
+ExternalAPIs -> GeminiCLI: 返回响应
 GeminiCLI -> User: 展示结果
 
 == IDE工具统一配置 ==

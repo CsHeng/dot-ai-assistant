@@ -60,7 +60,7 @@ API_TIMEOUT_MS = "3000000"
 CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1"
 
 # Claude Code model settings (optional)
-#ANTHROPIC_DEFAULT_HAIKU_MODEL = "glm-4.5-Air"
+#ANTHROPIC_DEFAULT_HAIKU_MODEL = "glm-4.5-air"
 #ANTHROPIC_DEFAULT_SONNET_MODEL = "glm-4.6"
 
 # Claude Code API configuration
@@ -70,6 +70,7 @@ ANTHROPIC_AUTH_TOKEN = "sk-your-veloera-api-key"
 # Qwen CLI (OpenAI-compatible)
 OPENAI_BASE_URL = "http://10.1.1.11:3000/v1"
 OPENAI_API_KEY = "sk-your-veloera-api-key"
+OPENAI_MODEL = "glm-4.6"  # 必须指定模型
 ```
 
 ## Common Commands
