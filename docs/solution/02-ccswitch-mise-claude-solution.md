@@ -75,7 +75,7 @@ VELOERA_TOKEN = "your-veloera-token"
 VELOERA_ANTHROPIC_URL = "http://localhost:3000/v1"
 
 # Claude Code配置
-ANTHROPIC_API_KEY = "{{ env.VELOERA_TOKEN }}"
+ANTHROPIC_AUTH_TOKEN = "{{ env.VELOERA_TOKEN }}"
 ANTHROPIC_BASE_URL = "{{ env.VELOERA_ANTHROPIC_URL }}"
 CLAUDE_MODEL = "glm-4.6"
 ```
@@ -88,7 +88,7 @@ VELOERA_TOKEN = "your-veloera-token"
 VELOERA_ANTHROPIC_URL = "http://localhost:3000/v1"
 
 # Claude Code配置
-ANTHROPIC_API_KEY = "{{ env.VELOERA_TOKEN }}"
+ANTHROPIC_AUTH_TOKEN = "{{ env.VELOERA_TOKEN }}"
 ANTHROPIC_BASE_URL = "{{ env.VELOERA_ANTHROPIC_URL }}"
 CLAUDE_MODEL = "glm-4.5"
 ```

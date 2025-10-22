@@ -442,7 +442,7 @@ export OPENAI_API_KEY="your-veloera-token"
 export OPENAI_BASE_URL="http://localhost:3000/v1"
 
 # Claude CLI使用
-export ANTHROPIC_API_KEY="your-veloera-token"
+export ANTHROPIC_AUTH_TOKEN="your-veloera-token"
 export ANTHROPIC_BASE_URL="http://localhost:3000/v1"
 
 # 所有AI工具都使用统一的配置
@@ -498,7 +498,7 @@ docker run -p 8000:8000 portkey-ai/gateway
    [env]
    OPENAI_API_KEY = "sk-your-veloera-api-key"
    OPENAI_BASE_URL = "http://172.17.0.1:3000/v1"
-   ANTHROPIC_API_KEY = "sk-your-veloera-api-key"
+   ANTHROPIC_AUTH_TOKEN = "sk-your-veloera-api-key"
    ANTHROPIC_BASE_URL = "http://172.17.0.1:3000/v1"
    ```
 

@@ -144,7 +144,7 @@ DEFAULT_PROVIDER = "bigglm"
 DEFAULT_MODEL = "glm-4.6"
 
 # Claude Code CLI配置
-ANTHROPIC_API_KEY = "{{ env.VELOERA_TOKEN }}"
+ANTHROPIC_AUTH_TOKEN = "{{ env.VELOERA_TOKEN }}"
 ANTHROPIC_BASE_URL = "{{ env.VELOERA_URL }}"
 ```
 
@@ -156,7 +156,7 @@ ANTHROPIC_BASE_URL = "{{ env.VELOERA_URL }}"
 # ~/projects/my-web-app/.mise.toml
 [env]
 # Claude Code CLI配置
-ANTHROPIC_API_KEY = "sk-your-api-key"
+ANTHROPIC_AUTH_TOKEN = "sk-your-api-key"
 ANTHROPIC_BASE_URL = "http://172.17.0.1:3000/v1"
 CLAUDE_MODEL = "glm-4.6"
 
@@ -172,7 +172,7 @@ OPENAI_MODEL = "glm-4.6"
 # ~/projects/my-blog/.mise.toml
 [env]
 # Claude Code CLI配置
-ANTHROPIC_API_KEY = "sk-your-api-key"
+ANTHROPIC_AUTH_TOKEN = "sk-your-api-key"
 ANTHROPIC_BASE_URL = "http://172.17.0.1:3000/v1"
 CLAUDE_MODEL = "glm-4.5"
 
@@ -188,7 +188,7 @@ OPENAI_MODEL = "glm-4.5"
 # ~/projects/my-data-analysis/.mise.toml
 [env]
 # Claude Code CLI配置
-ANTHROPIC_API_KEY = "sk-your-api-key"
+ANTHROPIC_AUTH_TOKEN = "sk-your-api-key"
 ANTHROPIC_BASE_URL = "http://172.17.0.1:3000/v1"
 CLAUDE_MODEL = "glm-4.6"
 
@@ -204,7 +204,7 @@ OPENAI_MODEL = "glm-4.6"
 # ~/projects/personal-projects/.mise.toml
 [env]
 # Claude Code CLI配置
-ANTHROPIC_API_KEY = "sk-your-api-key"
+ANTHROPIC_AUTH_TOKEN = "sk-your-api-key"
 ANTHROPIC_BASE_URL = "http://172.17.0.1:3000/v1"
 CLAUDE_MODEL = "moonshot-v1-8k"
 
@@ -309,7 +309,7 @@ echo "🔗 Endpoint: ${ANTHROPIC_BASE_URL:-未设置}"
 # 测试AI连接
 curl -s "${ANTHROPIC_BASE_URL}/messages" \
   -H "Content-Type: application/json" \
-  -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+  -H "x-api-key: ${ANTHROPIC_AUTH_TOKEN}" \
   -d '{"model": "'"$CLAUDE_MODEL"'", "max_tokens": 10, "messages": [{"role": "user", "content": "Test"}]}' | grep -q "content" && echo "✅ 连接成功" || echo "❌ 连接失败"
 
 # 查看Mise环境变量
@@ -351,7 +351,7 @@ cat .mise.toml
 echo "🤖 Debug: AI Configuration"
 echo "=========================="
 echo "CLAUDE_MODEL: ${CLAUDE_MODEL:-未设置}"
-echo "ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:0:8}..."
+echo "ANTHROPIC_AUTH_TOKEN: ${ANTHROPIC_AUTH_TOKEN:0:8}..."
 echo "ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-未设置}"
 ```
 
@@ -377,7 +377,7 @@ docker-compose restart veloera
 ### 统一配置示例
 ```bash
 # Claude Code CLI
-ANTHROPIC_API_KEY="sk-your-veloera-api-key"
+ANTHROPIC_AUTH_TOKEN="sk-your-veloera-api-key"
 ANTHROPIC_BASE_URL="http://10.1.1.11:3000/v1"
 
 # OpenAI Codex CLI

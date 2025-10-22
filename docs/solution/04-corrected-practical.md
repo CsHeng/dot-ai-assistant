@@ -39,7 +39,7 @@ DEEPSEEK_API_KEY = "{{ env.DEEPSEEK_API_KEY }}"
 KIMI_API_KEY = "{{ env.KIMI_API_KEY }}"
 
 # Claude CLI配置
-ANTHROPIC_API_KEY = "{{ env.BIGGLM_API_KEY }}"  # 默认使用BigGLM
+ANTHROPIC_AUTH_TOKEN = "{{ env.BIGGLM_API_KEY }}"  # 默认使用BigGLM
 CLAUDE_MODEL = "{{ env.AI_CURRENT_MODEL }}"
 ANTHROPIC_BASE_URL = "https://api.bigglm/v1"
 ```

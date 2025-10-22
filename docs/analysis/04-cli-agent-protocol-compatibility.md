@@ -43,7 +43,7 @@ OPENAI_MODEL="glm-4.6" qwen "写一个React组件"
 ### Gemini CLI (仅官方Gemini协议)
 ```bash
 # 仅支持API Key，无自定义端点
-export GOOGLE_AI_API_KEY="your-gemini-key"
+export GEMINI_API_KEY="your-gemini-key"
 
 # 使用示例
 gemini "写一个React组件"
@@ -112,7 +112,7 @@ export OPENAI_MODEL="glm-4.6"  # Qwen CLI必须指定模型
 #### 仅支持官方API的工具
 ```bash
 # 需要独立配置和管理
-export GOOGLE_AI_API_KEY="gemini-official-key"
+export GEMINI_API_KEY="gemini-official-key"
 # Codex CLI需要单独登录: codex login
 ```
 
